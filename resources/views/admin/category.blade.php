@@ -27,7 +27,7 @@
                         <a href="{{url('/admin/transaction')}}" class="block px-4 py-2 rounded hover:bg-gray-700">Riwayat Transaksi</a>
                     </li>
                     <li class="mb-2">
-                        <a href="{{ url('/admin/category') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Kategori</a>
+                        <a href="{{url('admin/dashboard')}}" class="block px-4 py-2 rounded hover:bg-gray-700">Settings</a>
                     </li>
                 </ul>
                 <!-- Logout Button -->
@@ -51,37 +51,32 @@
                 <div class="bg-white shadow rounded p-4">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold">Transaction List</h3>
-                        {{-- <a href="{{ route('products.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                            + Tambah Produk
-                        </a> --}}
+                        <a href="{{ route('category.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            + Tambah Category
+                        </a>
                     </div>
                     <table class="w-full border-collapse border border-gray-200">
                         <thead>
                             <tr class="bg-gray-100">
                                 <th class="border border-gray-300 px-4 py-2 text-left">Number</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Product ID</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Product Name</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">User ID</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Username</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Status</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Actions</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Nama Kategori</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Loop through product data -->
-                            @foreach($transactions as $index => $transaction)
-                            <tr>
-                                <!-- Number column -->
-                                <td class="border border-gray-300 px-4 py-2">{{ $index + 1 }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $transaction->product->id }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $transaction->product->name }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $transaction->user_id }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $transaction->user->username }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ ucfirst($transaction->status) }}</td>
-                                <td class="border border-gray-300 px-4 py-2">
-                                    <a href="{{ route('transactions.edit', $transaction->id) }}" class="text-blue-500 hover:underline">Edit</a>
-                                </td>
-                            </tr>
+                            @foreach ($categories as $category)
+                                <tr>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $category->id }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $category->nama_category }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">
+                                        <a href="{{ route('category.edit', $category->id) }}" class="text-blue-500 hover:underline">Edit</a> |
+                                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-500 hover:underline" onclick="return confirm('Are you sure?')">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>

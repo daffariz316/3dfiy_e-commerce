@@ -12,6 +12,7 @@
             <h1 class="text-2xl font-bold mb-4">Tambah Produk</h1>
             <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+
                 <!-- Name -->
                 <div class="mb-4">
                     <label for="name" class="block text-gray-700 font-bold mb-2">Nama Produk</label>
@@ -30,6 +31,17 @@
                     <input type="number" id="price" name="price" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300" required>
                 </div>
 
+                <!-- Category -->
+                <div class="mb-4">
+                    <label for="category_id" class="block text-gray-700 font-bold mb-2">Kategori</label>
+                    <select id="category_id" name="category_id" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300" required>
+                        <option value="">Pilih Kategori</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->nama_category }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <!-- Image -->
                 <div class="mb-4">
                     <label for="image" class="block text-gray-700 font-bold mb-2">Gambar Produk</label>
@@ -38,12 +50,11 @@
 
                 <!-- Blender -->
                 <div class="mb-4">
-                    <label for="blender" class="block text-gray-700 font-bold mb-2"> blender</label>
+                    <label for="blender" class="block text-gray-700 font-bold mb-2">Blender File</label>
                     <input type="file" id="blender" name="blender" accept=".blend,.zip,.rar" class="w-full border px-3 py-2 rounded">
-                        @error('blender')
+                    @error('blender')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
-                    </label>
                 </div>
 
                 <!-- Submit Button -->

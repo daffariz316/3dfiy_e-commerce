@@ -9,7 +9,10 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     Public function showAdminDashboard(){
-        return view('admin.home');
+        $pendingTransactions = Transactions::where('status', 'pending')->get(); // Ambil data jika perlu
+        return view('admin.dashboard', [
+        'pendingTransactions' => $pendingTransactions
+    ]);
     }
     public function index()
     {
@@ -22,12 +25,15 @@ class DashboardController extends Controller
     public function transaction(){
         return view('admin.transaction');
     }
-    public function loadTransaction()
-{
-    $transactions = Transactions::with(['product', 'user'])->get();
-    return view('admin.transaction', compact('transactions'));
-}
 
+    public function notificationTransaction() {
+        $pendingTransactions = Transactions::where('status', 'pending')->get();
 
-
+        return view('admin.dashboard', [
+            'pendingTransactions' => $pendingTransactions
+        ]);
+    }
+    public function category(){
+        return view('admin.category');
+    }
 }

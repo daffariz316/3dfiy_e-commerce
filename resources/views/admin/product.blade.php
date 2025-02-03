@@ -26,7 +26,7 @@
                         <a href="{{url('/admin/transaction')}}" class="block px-4 py-2 rounded hover:bg-gray-700">Riwayat Transaksi</a>
                     </li>
                     <li class="mb-2">
-                        <a href="{{url('admin/dashboard')}}" class="block px-4 py-2 rounded hover:bg-gray-700">Settings</a>
+                        <a href="{{ url('/admin/category') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Kategori</a>
                     </li>
                 </ul>
                 <!-- Logout Button -->
@@ -63,6 +63,8 @@
                                 <th class="border border-gray-300 px-4 py-2 text-left">Price</th>
                                 <th class="border border-gray-300 px-4 py-2 text-left">Image</th>
                                 <th class="border border-gray-300 px-4 py-2 text-left">Blender</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Category ID</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Category Name</th>
                                 <th class="border border-gray-300 px-4 py-2 text-left">Actions</th>
                             </tr>
                         </thead>
@@ -92,6 +94,8 @@
                                         <span>No File</span>
                                     @endif
                                 </td>
+                                <td class="border border-gray-300 px-4 py-2">{{$product->category->id }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{$product->category->nama_category }}</td>
                                 <td class="border border-gray-300 px-4 py-2">
                                     <a href="{{ route('products.edit', $product->id) }}" class="text-blue-500 hover:underline">Edit</a> |
                                     <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="inline">

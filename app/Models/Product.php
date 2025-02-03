@@ -14,9 +14,14 @@ class Product extends Model
         "price",
         "image",
         "blender_file",
+        "category_id"
     ];
     public function transactions()
     {
         return $this->hasMany(Transactions::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

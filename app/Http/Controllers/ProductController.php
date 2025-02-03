@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    //
     public function show($id)
     {
         $product = Product::findOrFail($id);
@@ -18,7 +20,8 @@ class ProductController extends Controller
         return view('admin.product', ['products'=> $products]);
     }
     public function addProductAdmin(){
-        return view('admin.tambah');
+        $categories = Category::all(); // Ambil semua kategori dari database
+    return view('admin.tambah', compact('categories'));
     }
     public function store(Request $request)
     {
@@ -28,7 +31,8 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'blender_file' => 'nullable|mimes:zip,rar,blend|max:500000', // Validasi untuk file Blender
+            'blender_file' => 'nullable|mimes:zip,rar|max:500000', // Validasi untuk file Blender
+            'category_id' => 'required|exists:categories,id', // Validasi kategori
         ]);
 
 
@@ -54,9 +58,82 @@ class ProductController extends Controller
             'price' => $validated['price'],
             'image' => $imagePath,
             'blender_file' => $blenderFilePath, // Simpan path file Blender
+            'category_id' => $validated['category_id'], // Menyimpan kategori
         ]);
 
         // Redirect ke halaman produk dengan pesan sukses
         return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan!');
     }
+        public function edit($id)
+    {
+        $product = Product::findOrFail($id);
+        $categories = Category::all(); // Ambil semua kategori dari database
+        return view('admin.edit-product', compact('product', 'categories'));
+    }
+    public function update(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'blender_file' => 'nullable|mimes:zip,rar|max:500000', // Validasi untuk file Blender
+            'category_id' => 'required|exists:categories,id', // Validasi kategori
+        ]);
+
+        $product = Product::findOrFail($id);
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->category_id = $request->category_id; // Menyimpan kategori baru
+
+        // Proses upload gambar jika ada
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
+            $product->image = $imageName;
+        }
+
+        // Proses upload file Blender jika ada
+        if ($request->hasFile('blender_file')) {
+            $blenderFileName = time() . '.' . $request->blender_file->getClientOriginalExtension();
+            $request->blender_file->move(public_path('folder_blender'), $blenderFileName);
+            $product->blender_file = $blenderFileName;  // Pastikan penamaan sesuai
+        }
+
+        // Simpan perubahan data ke database
+        $product->save();
+
+        // Redirect ke halaman produk dengan pesan sukses
+        return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui!');
+    }
+    public function destroy($id)
+{
+    $product = Product::findOrFail($id);
+
+    // Hapus file gambar jika ada
+    if ($product->image) {
+        $imagePath = public_path('images/' . $product->image);
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+    }
+
+    // Hapus file Blender jika ada
+    if ($product->blender_file) {
+        $blenderFilePath = public_path('folder_blender/' . $product->blender_file);
+        if (file_exists($blenderFilePath)) {
+            unlink($blenderFilePath);
+        }
+    }
+
+    // Hapus produk dari database
+    $product->delete();
+
+    // Redirect ke halaman produk dengan pesan sukses
+    return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus!');
+}
+
+
 }
