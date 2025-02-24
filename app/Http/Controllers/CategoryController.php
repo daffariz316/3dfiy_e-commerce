@@ -38,10 +38,22 @@ class CategoryController extends Controller
     }
     public function edit(Request $request, $id){
         $category = Category::findOrFail($id);
-        return view('admin.edit', compact('category'));
+        return view('admin.edit-category', compact('category'));
     }
     public function addCategoryAdmin(){
         return view('admin.tambah-category');
+    }
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama_category' => 'required|string|max:255',
+        ]);
+
+        $category = Category::findOrFail($id);
+        $category->nama_category = $request->nama_category;
+        $category->save();
+
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui');
     }
 
 }

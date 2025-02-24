@@ -23,47 +23,94 @@ class ProductController extends Controller
         $categories = Category::all(); // Ambil semua kategori dari database
     return view('admin.tambah', compact('categories'));
     }
+    // public function store(Request $request)
+    // {
+    //     // Validasi input
+    //     $validated = $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'description' => 'required|string',
+    //         'price' => 'required|numeric',
+    //         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    //         'blender_file' => 'nullable|mimes:zip,rar|max:500000', // Validasi untuk file Blender
+    //         'category_id' => 'required|exists:categories,id', // Validasi kategori
+    //     ]);
+
+
+    //     // Proses upload gambar jika ada
+    //     $imagePath = null;
+    //     if ($request->hasFile('image')) {
+    //         $imageName = time() . '.' . $request->image->extension(); // Membuat nama unik untuk file
+    //         $request->image->move(public_path('images'), $imageName); // Menyimpan gambar ke folder public/images
+    //         $imagePath = $imageName; // Menyimpan nama file
+    //     }
+    //     // Proses upload file Blender jika ada
+    //     $blenderFilePath = null;
+    //     if ($request->hasFile('blender')) {
+    //         $blenderFileName = time() . '.' . $request->blender->getClientOriginalExtension();
+    //         $request->blender->move(public_path('folder_blender'), $blenderFileName);
+    //         $blenderFilePath = $blenderFileName;
+    //     }
+
+    //     // Simpan data ke database
+    //     Product::create([
+    //         'name' => $validated['name'],
+    //         'description' => $validated['description'],
+    //         'price' => $validated['price'],
+    //         'image' => $imagePath,
+    //         'blender_file' => $blenderFilePath, // Simpan path file Blender
+    //         'category_id' => $validated['category_id'], // Menyimpan kategori
+    //     ]);
+
+    //     // Redirect ke halaman produk dengan pesan sukses
+    //     return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan!');
+    // }
     public function store(Request $request)
-    {
-        // Validasi input
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'blender_file' => 'nullable|mimes:zip,rar|max:500000', // Validasi untuk file Blender
-            'category_id' => 'required|exists:categories,id', // Validasi kategori
-        ]);
+{
+    // Validasi input
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'price' => 'required|numeric',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'blender_file' => 'nullable|mimes:zip,rar|max:500000', // Validasi untuk file Blender
+        'category_id' => 'required|exists:categories,id', // Validasi kategori
+    ]);
 
 
-        // Proses upload gambar jika ada
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension(); // Membuat nama unik untuk file
-            $request->image->move(public_path('images'), $imageName); // Menyimpan gambar ke folder public/images
-            $imagePath = $imageName; // Menyimpan nama file
-        }
-        // Proses upload file Blender jika ada
-        $blenderFilePath = null;
-        if ($request->hasFile('blender')) {
-            $blenderFileName = time() . '.' . $request->blender->getClientOriginalExtension();
-            $request->blender->move(public_path('folder_blender'), $blenderFileName);
-            $blenderFilePath = $blenderFileName;
-        }
-
-        // Simpan data ke database
-        Product::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'],
-            'price' => $validated['price'],
-            'image' => $imagePath,
-            'blender_file' => $blenderFilePath, // Simpan path file Blender
-            'category_id' => $validated['category_id'], // Menyimpan kategori
-        ]);
-
-        // Redirect ke halaman produk dengan pesan sukses
-        return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan!');
+    // Proses upload gambar jika ada
+    $imagePath = null;
+    if ($request->hasFile('image')) {
+        $imageName = time() . '.' . $request->image->extension(); // Membuat nama unik untuk file
+        $request->image->move(public_path('images'), $imageName); // Menyimpan gambar ke folder public/images
+        $imagePath = $imageName; // Menyimpan nama file
     }
+
+    // Simpan data produk ke database terlebih dahulu
+    $product = Product::create([
+        'name' => $validated['name'],
+        'description' => $validated['description'],
+        'price' => $validated['price'],
+        'image' => $imagePath,
+        'category_id' => $validated['category_id'], // Menyimpan kategori
+    ]);
+
+    // Proses upload file Blender jika ada setelah produk disimpan dan ID tersedia
+    if ($request->hasFile('blender')) {
+        $blenderFileName = $product->id . '.zip'; // Gunakan ID produk untuk nama file
+        $request->blender->move(public_path('folder_blender'), $blenderFileName); // Error ada di sini
+        $blenderFilePath = $blenderFileName;
+
+        // Update path file Blender pada produk
+        $product->update([
+            'blender_file' => $blenderFilePath,
+        ]);
+    }
+
+
+    // Redirect ke halaman produk dengan pesan sukses
+    return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan!');
+}
+
         public function edit($id)
     {
         $product = Product::findOrFail($id);
@@ -96,10 +143,15 @@ class ProductController extends Controller
         }
 
         // Proses upload file Blender jika ada
-        if ($request->hasFile('blender_file')) {
-            $blenderFileName = time() . '.' . $request->blender_file->getClientOriginalExtension();
-            $request->blender_file->move(public_path('folder_blender'), $blenderFileName);
-            $product->blender_file = $blenderFileName;  // Pastikan penamaan sesuai
+        if ($request->hasFile('blender')) {
+            $blenderFileName = $product->id . '.zip'; // Gunakan ID produk untuk nama file
+            $request->blender->move(public_path('folder_blender'), $blenderFileName); // Error ada di sini
+            $blenderFilePath = $blenderFileName;
+
+            // Update path file Blender pada produk
+            $product->update([
+                'blender_file' => $blenderFilePath,
+            ]);
         }
 
         // Simpan perubahan data ke database

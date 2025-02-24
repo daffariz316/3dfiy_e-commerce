@@ -8,12 +8,33 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    Public function showAdminDashboard(){
+    // Public function showAdminDashboard(){
+    //     $pendingTransactions = Transactions::where('status', 'pending')->get(); // Ambil data jika perlu
+    //     $transactions = Transactions::with(['product', 'user'])->get();
+    //     $totalTransactions = $transactions->count();
+    //     return view('admin.dashboard', [
+    //     'pendingTransactions' => $pendingTransactions,
+    //     'transactions' => $transactions,
+    //     'total'=> $totalTransactions
+    // ]);
+    // }
+    public function showAdminDashboard() {
         $pendingTransactions = Transactions::where('status', 'pending')->get(); // Ambil data jika perlu
+        $transactions = Transactions::with(['product', 'user'])
+                            ->where('status', '!=', 'paid') // Filter transaksi yang tidak berstatus "Paid"
+                            ->latest() // Urutkan berdasarkan yang terbaru
+                            ->take(5) // Ambil 5 data saja
+                            ->get();
+
+        $totalTransactions = Transactions::where('status', '!=', 'paid')->count(); // Hitung total transaksi
+
         return view('admin.dashboard', [
-        'pendingTransactions' => $pendingTransactions
-    ]);
+            'pendingTransactions' => $pendingTransactions,
+            'transactions' => $transactions,
+            'total' => $totalTransactions
+        ]);
     }
+
     public function index()
     {
         $products = Product::all(); // Get all products
@@ -33,7 +54,9 @@ class DashboardController extends Controller
             'pendingTransactions' => $pendingTransactions
         ]);
     }
-    public function category(){
-        return view('admin.category');
+    public function paymentTransaction() {
+        return view('payment.mindtrans');
     }
+
+
 }

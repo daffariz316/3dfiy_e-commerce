@@ -18,10 +18,11 @@ class Product extends Model
     ];
     public function transactions()
     {
-        return $this->hasMany(Transactions::class);
+        return $this->hasMany(Transactions::class, 'product_id');
     }
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
+
 }

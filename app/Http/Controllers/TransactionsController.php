@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Transactions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionsController extends Controller
 {
@@ -15,13 +16,36 @@ class TransactionsController extends Controller
              'user_id' => auth()->id(),
              'status' => 'pending',
          ]);
+         // Set your Merchant Server Key
+        \Midtrans\Config::$serverKey = 'SB-Mid-server-u4vEkrtZG59K9tQyIqwYI2gr';
+        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+        \Midtrans\Config::$isProduction = false;
+        // Set sanitization on (default)
+        \Midtrans\Config::$isSanitized = true;
+        // Set 3DS transaction for credit card to true
+        \Midtrans\Config::$is3ds = true;
 
+
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => rand(),
+                'gross_amount' => $product->price,
+            ),
+            'customer_details' => array(
+                'first_name' => auth()->user()->name,
+                'email' => auth()->user()->email,
+            ),
+            );
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+            $transaction ->snap_token = $snapToken;
+            $transaction -> save();
+            return response()->json($snapToken);
          // Format pesan otomatis WhatsApp
-         $whatsappUrl = "https://wa.me/62895372499072?text=" . urlencode(
-             "Halo, saya ingin membeli produk *{$product->name}*. Mohon informasi lebih lanjut terkait pembayaran. Terima kasih!"
-         );
+        //  $whatsappUrl = "https://wa.me/62895372499072?text=" . urlencode(
+        //      "Halo, saya ingin membeli produk *{$product->name}*. Mohon informasi lebih lanjut terkait pembayaran. Terima kasih!"
+        //  );
 
-         return redirect($whatsappUrl);
+        //  return redirect($whatsappUrl);
      }
 
      // 2. Admin menyetujui pembayaran (mengubah status ke 'paid')
@@ -33,41 +57,38 @@ class TransactionsController extends Controller
      }
 
      // 3. Pengguna dapat mendownload produk setelah pembayaran disetujui
-     public function download(Product $product)
-{
+    // Download File Blender
+    public function download(Product $product)
+    {
+        // Cek apakah user memiliki transaksi dengan status "paid"
+        $transaction = Transactions::where('product_id', $product->id)
+            ->where('user_id', Auth::id())
+            ->where('status', 'paid')
+            ->first();
 
-    // Cek apakah user memiliki transaksi dengan status "paid"
-    $transaction = Transactions::where('product_id', $product->id)
-        ->where('user_id', auth()->id())
-        ->where('status', 'paid')
-        ->first();
+        if (!$transaction) {
+            return redirect()->back()->with('error', 'Pembayaran belum dikonfirmasi.');
+        }
 
-    // Jika tidak ada transaksi dengan status "paid", tampilkan pesan error
-    if (!$transaction) {
-        return redirect()->back()->with('error', 'Pembayaran belum dikonfirmasi.');
+        // Cek apakah file ada dalam database
+        if (!$product->blender_file) {
+            return redirect()->back()->with('error', 'File tidak ditemukan.');
+        }
+
+        return $this->fileDownload($product->blender_file);
     }
 
-    // Tentukan nama file berdasarkan ID produk
-    $fileName = "produk_{$product->id}.zip"; // Sesuaikan dengan format nama file yang ada
+    // Fungsi untuk mengunduh file
+    private function fileDownload($path)
+    {
+        $filePath = public_path("folder_blender/$path");
 
-    // Panggil fungsi fileDownload untuk mengunduh file
-    return $this->fileDownload($fileName);
-}
+        if (!file_exists($filePath)) {
+            return redirect()->back()->with('error', 'File tidak ditemukan.');
+        }
 
-public function fileDownload($path)
-{
-    $filePath = public_path("folder_blender/$path");
-
-    // Cek apakah file ada sebelum diunduh
-    if (!file_exists($filePath)) {
-        abort(404);
+        return response()->download($filePath);
     }
-
-    return response()->download($filePath);
-}
-
-
-
         public function edit($id)
     {
         // Ambil data transaksi berdasarkan ID

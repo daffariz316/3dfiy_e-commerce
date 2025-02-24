@@ -87,23 +87,54 @@ class AuthController extends Controller
         ]);
     }
     public function showadsignup(){
+         // Pastikan hanya admin yang sudah login yang bisa mengakses halaman ini
+    if (!Auth::guard('admin')->check()) {
+        return redirect()->route('admin-login')->withErrors(['error' => 'Unauthorized access!']);
+    }
         return view('admin.signup');
     }
-    public function adsignup(Request $request){
-        $request->validate([
-            'username' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|max:8', // Membatasi password maksimal 8 karakter
-        ]);
+//     public function adsignup(Request $request){
+//         $request->validate([
+//             'username' => 'required|string|max:255',
+//             'email' => 'required|email|unique:users',
+//             'password' => 'required|string|min:8|max:8', // Membatasi password maksimal 8 karakter
+//         ]);
 
-        Admins::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+//         Admins::create([
+//             'username' => $request->username,
+//             'email' => $request->email,
+//             'password' => Hash::make($request->password),
 
-        ]);
-        return redirect('/admin-login')->with('success', 'Account created successfully');
+//         ]);
+//         return redirect('/admin-login')->with('success', 'Account created successfully');
+//     }
+  public function adsignup(Request $request)
+{
+    // Pastikan hanya admin yang sudah login yang bisa menambahkan admin baru
+    if (!Auth::guard('admin')->check()) {
+        return redirect()->route('admin-login')->withErrors(['error' => 'Unauthorized access!']);
     }
+
+    $request->validate([
+        'username' => 'required|string|max:255',
+        'email' => 'required|email|unique:admins', // Pastikan email unik di tabel admins
+        'password' => 'required|string|min:8|max:8', // Membatasi password maksimal 8 karakter
+    ]);
+
+    // Membuat akun admin baru
+    $admin = Admins::create([
+        'username' => $request->username,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    // Langsung login dengan akun admin yang baru dibuat
+    Auth::guard('admin')->login($admin);
+
+    // Redirect ke dashboard admin setelah berhasil daftar
+    return redirect()->route('admin-dashboard')->with('success', 'Admin account created successfully');
+}
+
     public function adlogout(Request $request)
     {
         Auth::logout();

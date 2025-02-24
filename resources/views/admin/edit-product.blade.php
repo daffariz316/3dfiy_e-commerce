@@ -57,7 +57,7 @@
                 <!-- Gambar Produk -->
                 <div class="mb-4">
                     <label for="image" class="block text-gray-700 font-bold mb-2">Gambar Produk</label>
-                    <input type="file" id="image" name="image" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
+                    <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
                 </div>
 
                 <!-- File Blender -->

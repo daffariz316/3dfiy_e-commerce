@@ -30,7 +30,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/admin-login',[AuthController::class, 'showadlogin'])->name('admin-login');
 Route::post('/admin-login', [AuthController::class, 'adlogin']);
 Route::get('/admin-signup', [AuthController::class, 'showadsignup'])->name('admin-signup');
-Route::post('/admin-signup', [AuthController::class, 'adsignup']);
+Route::post('/admin-signup', [AuthController::class, 'adsignup'])->middleware('auth:admin')->name('admin-signup');
+// Route::get('/admin-signup', [AuthController::class, 'showadsignup'])->name('admin-signup');
+// Route::post('/admin-signup', [AuthController::class, 'adsignup']);
 Route::get('/admin-logout', [AuthController::class,'adlogout'])->name('admin-logout');
 
 //dashboard admin control
@@ -48,6 +50,7 @@ Route::put('/admin/transaction/{id}', [TransactionsController::class, 'update'])
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 Route::get('/admin/category', [CategoryController::class, 'index'])->name('categories.index');
 Route::post('/admin/category', [CategoryController::class, 'store'])->name('categories.store');
+Route::put('/admin/category/{id}', [CategoryController::class, 'update'])->name('category.update');
 Route::delete('/admin/category/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 Route::get('/admin/category/{id}/edit', [CategoryController::class,'edit'])->name('category.edit');
 Route::get('/admin/category/create', [CategoryController::class, 'addCategoryAdmin'])->name('category.create');
@@ -80,5 +83,11 @@ Route::get('/product/{id}', [ProductController::class, 'show']);
 
 //pembayaran control
 Route::post('/purchase/{product}', [TransactionsController::class, 'purchase'])->name('purchase');
-Route::get('/download/{product}', [TransactionsController::class, 'download'])->name('product.download');
+// Route::get('/download/{product}', [TransactionsController::class, 'download'])->name('product.download');
 Route::post('/approve/{transaction}', [TransactionsController::class, 'approve'])->name('approve.transaction');
+
+Route::get('/download-file/blender/{product}', [TransactionsController::class, 'download'])->name('products.download')->middleware('auth');
+
+Route::post('/purchase/{product}', [TransactionsController::class, 'purchase'])->name('purchase');
+Route::post('/midtrans-webhook', [TransactionsController::class, 'handleWebhook']);
+Route::get('/payment-success', [TransactionsController::class, 'paymentSuccess']);
