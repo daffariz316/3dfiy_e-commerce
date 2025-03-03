@@ -147,8 +147,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(isset($transactions) && count($transactions) > 0)
-                                    @foreach($transactions as $index => $transaction)
+                                    @if(isset($totalTransactionstable) && count($totalTransactionstable) > 0)
+                                    @foreach($totalTransactionstable as $index => $transaction)
                                         <tr>
                                             <td class="border border-gray-300 px-2 py-2">{{ $index + 1 }}</td>
                                             <td class="border border-gray-300 px-2 py-2">{{ $transaction->product->name ?? 'N/A' }}</td>

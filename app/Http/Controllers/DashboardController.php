@@ -12,26 +12,35 @@ class DashboardController extends Controller
     //     $pendingTransactions = Transactions::where('status', 'pending')->get(); // Ambil data jika perlu
     //     $transactions = Transactions::with(['product', 'user'])->get();
     //     $totalTransactions = $transactions->count();
+    //     $totalTransactionstable = Transactions::with(['product', 'user'])
+    //                             ->where('status', '!=', 'paid') // Filter transaksi yang tidak berstatus "Paid"
+    //                             ->latest() // Urutkan berdasarkan yang terbaru
+    //                             ->take(5)// Ambil 5 data saja
+    //                             ->get();
     //     return view('admin.dashboard', [
     //     'pendingTransactions' => $pendingTransactions,
     //     'transactions' => $transactions,
-    //     'total'=> $totalTransactions
+    //     'total'=> $totalTransactions,
+    //     'totalTransactionstable' => $totalTransactionstable
     // ]);
     // }
-    public function showAdminDashboard() {
+    public function showAdminDashboard(){
         $pendingTransactions = Transactions::where('status', 'pending')->get(); // Ambil data jika perlu
-        $transactions = Transactions::with(['product', 'user'])
-                            ->where('status', '!=', 'paid') // Filter transaksi yang tidak berstatus "Paid"
-                            ->latest() // Urutkan berdasarkan yang terbaru
-                            ->take(5) // Ambil 5 data saja
-                            ->get();
+        $transactions = Transactions::with(['product', 'user'])->get();
+        $totalTransactions = $transactions->count();
 
-        $totalTransactions = Transactions::where('status', '!=', 'paid')->count(); // Hitung total transaksi
+        // Ambil 5 transaksi terbaru berdasarkan updated_at
+        $totalTransactionstable = Transactions::with(['product', 'user'])
+                                    ->where('status', '!=', 'paid') // Filter transaksi yang tidak "paid"
+                                    ->orderBy('updated_at', 'desc') // Urutkan berdasarkan updated_at terbaru
+                                    ->take(5) // Ambil 5 data saja
+                                    ->get();
 
         return view('admin.dashboard', [
             'pendingTransactions' => $pendingTransactions,
             'transactions' => $transactions,
-            'total' => $totalTransactions
+            'total'=> $totalTransactions,
+            'totalTransactionstable' => $totalTransactionstable
         ]);
     }
 

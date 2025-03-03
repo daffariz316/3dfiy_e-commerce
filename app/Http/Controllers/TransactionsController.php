@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Transactions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Midtrans\Config;
 
 class TransactionsController extends Controller
 {
@@ -49,12 +50,73 @@ class TransactionsController extends Controller
      }
 
      // 2. Admin menyetujui pembayaran (mengubah status ke 'paid')
-     public function approve(Transactions $transaction)
-     {
-         $transaction->update(['status' => 'paid']);
+    //  public function approve(Transactions $transaction)
+    //  {
+    //      $transaction->update(['status' => 'paid']);
 
-         return redirect()->back()->with('success', 'Pembayaran telah dikonfirmasi.');
-     }
+    //      return redirect()->back()->with('success', 'Pembayaran telah dikonfirmasi.');
+    //  }
+//     public function approve(Request $request)
+// {
+//     $transaction = Transactions::where('user_id', auth()->id())
+//                                ->where('product_id', $request->product_id)
+//                                ->first();
+
+//     if ($transaction) {
+//         $transaction->status = "paid";
+//         $transaction->save();
+//         return response()->json(['message' => 'Transaction updated successfully']);
+//     }
+
+//     return response()->json(['message' => 'Transaction not found'], 404);
+// }
+// Midtrans Notification Handler
+public function callback(Request $request)
+{
+    // Konfigurasi Midtrans
+    Config::$serverKey = 'SB-Mid-server-u4vEkrtZG59K9tQyIqwYI2gr';
+    Config::$isProduction = false;
+    Config::$isSanitized = true;
+    Config::$is3d = true;
+
+    // Tangkap notifikasi dari Midtrans
+    $notification = new Notification();
+
+    $transactionStatus = $notification->transaction_status;
+    $orderId = $notification->order_id;
+
+    // Cari transaksi berdasarkan order_id
+    $transaction = Transactions::where('order_id', $orderId)->first();
+
+    if ($transaction) {
+        if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
+            $transaction->status = 'paid';
+        } elseif ($transactionStatus == 'pending') {
+            $transaction->status = 'waiting';
+        } elseif ($transactionStatus == 'expire' || $transactionStatus == 'cancel' || $transactionStatus == 'deny') {
+            $transaction->status = 'failed';
+        }
+        $transaction->save();
+    }
+
+    return response()->json(['message' => 'Transaction status updated successfully']);
+}
+
+public function approve(Request $request)
+{
+    $transaction = Transactions::where('user_id', auth()->id())
+                               ->where('product_id', $request->product_id)
+                               ->first();
+
+    if ($transaction) {
+        $transaction->status = "paid";
+        $transaction->save();
+        return response()->json(['message' => 'Transaction updated successfully']);
+    }
+
+    return response()->json(['message' => 'Transaction not found'], 404);
+}
+
 
      // 3. Pengguna dapat mendownload produk setelah pembayaran disetujui
     // Download File Blender

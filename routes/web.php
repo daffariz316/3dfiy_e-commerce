@@ -79,7 +79,7 @@ Route::get('/download/blender/{filename}', function ($filename) {
 Route::permanentRedirect('/', '/dashboard');
 Route::get('/dashboard', [DashboardController::class,'index']);
 Route::get('/product/{id}', [ProductController::class, 'show']);
-
+Route::get('/dashboard/categories', [CategoryController::class, 'indexU'])->name('categories.indexU');
 
 //pembayaran control
 Route::post('/purchase/{product}', [TransactionsController::class, 'purchase'])->name('purchase');
