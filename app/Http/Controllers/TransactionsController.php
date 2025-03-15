@@ -7,6 +7,7 @@ use App\Models\Transactions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Midtrans\Config;
+use Midtrans\Notification;
 
 class TransactionsController extends Controller
 {
@@ -34,7 +35,7 @@ class TransactionsController extends Controller
             ),
             'customer_details' => array(
                 'first_name' => auth()->user()->name,
-                'email' => auth()->user()->email,
+                // 'email' => auth()->user()->email,
             ),
             );
             $snapToken = \Midtrans\Snap::getSnapToken($params);

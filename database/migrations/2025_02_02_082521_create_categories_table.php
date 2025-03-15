@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id(); // Pastikan ini BIGINT (Auto Increment)
             $table->string('nama_category');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
 

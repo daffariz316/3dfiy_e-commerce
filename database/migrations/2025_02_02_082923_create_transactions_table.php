@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
+            $table->string('snap_token')->nullable();
             $table->timestamps();
         });
     }

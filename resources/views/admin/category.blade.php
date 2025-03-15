@@ -67,6 +67,7 @@
                                 <tr class="bg-gray-100 text-left">
                                     <th class="border border-gray-300 px-2 py-2">Number</th>
                                     <th class="border border-gray-300 px-2 py-2">Name Category</th>
+                                    <th class="border border-gray-300 px-2 py-2">Image</th>
                                     <th class="border border-gray-300 px-2 py-2">Actions</th>
                                 </tr>
                             </thead>
@@ -75,6 +76,13 @@
                                 <tr>
                                     <td class="border border-gray-300 px-2 py-2">{{ $index + 1 }}</td>
                                     <td class="border border-gray-300 px-2 py-2">{{  $category->nama_category }}</td>
+                                    <td class="border border-gray-300 px-2 py-2">
+                                        @if($category->image)
+                                            <img src="{{ asset('/images1/' . $category->image) }}" alt="Category Image" style="width: 100px; height: 100px;">
+                                        @else
+                                            <span>No Image Available</span>
+                                        @endif
+                                    </td>
                                     <td class="border border-gray-300 px-2 py-2">
                                         <a href="{{ route('category.edit', $category->id) }}" class="text-blue-500 hover:underline">Edit</a> |
                                         <form id="delete-form-{{ $category->id }}" action="{{ route('categories.destroy', $category->id) }}" method="POST" class="inline">

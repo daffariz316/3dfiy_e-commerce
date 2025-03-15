@@ -29,10 +29,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 //admins auth
 Route::get('/admin-login',[AuthController::class, 'showadlogin'])->name('admin-login');
 Route::post('/admin-login', [AuthController::class, 'adlogin']);
-Route::get('/admin-signup', [AuthController::class, 'showadsignup'])->name('admin-signup');
-Route::post('/admin-signup', [AuthController::class, 'adsignup'])->middleware('auth:admin')->name('admin-signup');
 // Route::get('/admin-signup', [AuthController::class, 'showadsignup'])->name('admin-signup');
-// Route::post('/admin-signup', [AuthController::class, 'adsignup']);
+// Route::post('/admin-signup', [AuthController::class, 'adsignup'])->middleware('auth:admin')->name('admin-signup');
+Route::get('/admin-signup', [AuthController::class, 'showadsignup'])->name('admin-signup');
+Route::post('/admin-signup', [AuthController::class, 'adsignup']);
 Route::get('/admin-logout', [AuthController::class,'adlogout'])->name('admin-logout');
 
 //dashboard admin control
@@ -79,10 +79,13 @@ Route::get('/download/blender/{filename}', function ($filename) {
 Route::permanentRedirect('/', '/dashboard');
 Route::get('/dashboard', [DashboardController::class,'index']);
 Route::get('/product/{id}', [ProductController::class, 'show']);
-Route::get('/dashboard/categories', [CategoryController::class, 'indexU'])->name('categories.indexU');
+Route::get('/categories', [DashboardController::class, 'indexU'])->name('categories.indexU');
+Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile');
+Route::get('/teams', [DashboardController::class, 'showteams'])->name('teams');
+// Route::get('/categories', [CategoryController::class, 'showCategories'])->name('categories.index');
 
 //pembayaran control
-Route::post('/purchase/{product}', [TransactionsController::class, 'purchase'])->name('purchase');
+// Route::post('/purchase/{product}', [TransactionsController::class, 'purchase'])->name('purchase');
 // Route::get('/download/{product}', [TransactionsController::class, 'download'])->name('product.download');
 Route::post('/approve/{transaction}', [TransactionsController::class, 'approve'])->name('approve.transaction');
 

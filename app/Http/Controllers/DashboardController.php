@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Transactions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -65,6 +67,28 @@ class DashboardController extends Controller
     }
     public function paymentTransaction() {
         return view('payment.mindtrans');
+    }
+
+    public function showProfile(){
+        $user = Auth::user(); // Mengambil data pengguna yang sedang login
+        return view('User.profile', compact('user'));
+    }
+
+    public function showteams(){
+        return view('User.teams');
+    }
+
+    public function indexU(){
+        $categories = Category::all(); // Ambil semua kategori dari database
+        return view('User.category-index', compact('categories'));
+    }
+    public function showCategories()
+    {
+        // Mengambil semua data kategori
+        $categories = Category::all();
+
+        // Mengirim data kategori ke view
+        return view('User.products.index', compact('categories'));
     }
 
 

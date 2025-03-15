@@ -54,15 +54,39 @@
                     </select>
                 </div>
 
-                <!-- Gambar Produk -->
+                <!-- Gambar Produk Saat Ini -->
                 <div class="mb-4">
-                    <label for="image" class="block text-gray-700 font-bold mb-2">Gambar Produk</label>
+                    <label class="block text-gray-700 font-bold mb-2">Gambar Saat Ini</label>
+                    @if($product->image)
+                        <img src="{{ asset('images/'.$product->image) }}" alt="Produk Image" class="w-full h-40 object-cover rounded mb-2">
+                    @else
+                        <p class="text-gray-500 text-sm">Tidak ada gambar</p>
+                    @endif
+                </div>
+
+                <!-- Input Upload Gambar Baru -->
+                <div class="mb-4">
+                    <label for="image" class="block text-gray-700 font-bold mb-2">Upload Gambar Baru</label>
                     <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
                 </div>
 
-                <!-- File Blender -->
+                <!-- File Blender Saat Ini -->
                 <div class="mb-4">
-                    <label for="blender_file" class="block text-gray-700 font-bold mb-2">File Blender</label>
+                    <label class="block text-gray-700 font-bold mb-2">File Blender Saat Ini</label>
+                    @if($product->blender_file)
+                        <p class="text-blue-500">
+                            <a href="{{ asset('folder_blender/'.$product->blender_file) }}" target="_blank" class="underline">
+                                {{ $product->blender_file }}
+                            </a>
+                        </p>
+                    @else
+                        <p class="text-gray-500 text-sm">Tidak ada file Blender</p>
+                    @endif
+                </div>
+
+                <!-- Input Upload File Blender Baru -->
+                <div class="mb-4">
+                    <label for="blender_file" class="block text-gray-700 font-bold mb-2">Upload File Blender Baru</label>
                     <input type="file" id="blender_file" name="blender_file" accept=".zip,.rar,.blend" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
                 </div>
 
