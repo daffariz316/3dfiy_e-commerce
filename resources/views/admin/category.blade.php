@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Admin Dashboard</title>
+    <title>Category Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
-    <div class="flex flex-col lg:flex-row">
+<body class="bg-gray-100 font-sans leading-normal tracking-normal flex flex-col min-h-screen">
+    <div class="flex flex-col lg:flex-row flex-grow">
         <!-- Sidebar -->
         <div class="w-64 h-screen bg-gray-800 text-white flex flex-col fixed lg:relative transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out" id="sidebar">
             <div class="px-4 py-6 flex justify-between items-center">
@@ -22,7 +22,7 @@
                         <a href="{{ route('admin-dashboard') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Dashboard</a>
                     </li>
                     <li class="mb-2">
-                        <a href="{{ url('/admin/product') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Product</a>
+                        <a href="{{ url('/admin/product') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Produk</a>
                     </li>
                     <li class="mb-2">
                         <a href="{{ url('/admin/transaction') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Riwayat Transaksi</a>
@@ -35,12 +35,12 @@
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 md:ml-50 p-4">
+        <div class="flex-1 md:ml-50 p-4 flex flex-col">
             <div class="bg-white shadow p-4 flex justify-between items-center flex-wrap">
                 <button id="openSidebar" class="lg:hidden text-gray-800 text-2xl">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h2 class="text-xl font-bold"> Category Dashboard</h2>
+                <h2 class="text-xl font-bold"> Halaman Kategori</h2>
                 <!-- Admin Session -->
                 <div class="relative">
                     <button class="focus:outline-none" id="adminDropdownButton">
@@ -48,15 +48,21 @@
                         <span class="hidden sm:inline">{{ session('admin')->email }}</span>
                     </button>
                     <div id="adminDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-4">
-                        <a href="{{ route('admin-signup') }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Sign Up</a>
-                        <a href="{{ route('admin-logout') }}" class="block px-4 py-2 text-red-500 hover:bg-gray-200">Logout</a>
+                        <a href="{{ route('admin-signup') }}" class="flex items-center px-4 py-2 text-blue-600 hover:bg-gray-200">
+                            <i class="fas fa-user-plus mr-2 text-blue-600"></i>
+                            Sign Up
+                        </a>
+                        <a href="{{ route('admin-logout') }}" class="flex items-center px-4 py-2 text-red-500 hover:bg-gray-200">
+                            <i class="fas fa-sign-out-alt mr-2 text-red-500"></i>
+                            Logout
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="p-6 overflow-x-auto">
+            <div class="p-6 overflow-x-auto flex-grow">
                 <div class="bg-white shadow rounded p-4">
                     <div class="flex justify-between items-center mb-4 flex-wrap">
-                        <h3 class="text-lg font-bold">Category List</h3>
+                        <h3 class="text-lg font-bold">List Kategori</h3>
                         <a href="{{ route('category.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                             + Tambah Category
                         </a>
@@ -65,10 +71,10 @@
                         <table class="w-full border-collapse border border-gray-200 text-sm">
                             <thead>
                                 <tr class="bg-gray-100 text-left">
-                                    <th class="border border-gray-300 px-2 py-2">Number</th>
-                                    <th class="border border-gray-300 px-2 py-2">Name Category</th>
-                                    <th class="border border-gray-300 px-2 py-2">Image</th>
-                                    <th class="border border-gray-300 px-2 py-2">Actions</th>
+                                    <th class="border border-gray-300 px-2 py-2">Nomor</th>
+                                    <th class="border border-gray-300 px-2 py-2">Name Kategory</th>
+                                    <th class="border border-gray-300 px-2 py-2">Gambar</th>
+                                    <th class="border border-gray-300 px-2 py-2">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,6 +104,15 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Footer -->
+            <footer class="bg-gray-900 text-white p-6 mt-auto">
+                <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <p> &copy; {{ date('Y') }} 3Dify. All rights reserved.</p>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
     <script>

@@ -26,7 +26,7 @@
         <div class="space-x-6 hidden md:flex">
             <a href="{{url('/dashboard')}}" class="text-gray-600">Beranda</a>
             <a href="{{url('/categories')}}" class="text-gray-600">Kategori</a>
-            <a href="#" class="text-gray-600">Produk</a>
+            <a href="{{url('/products')}}" class="text-gray-600">Produk</a>
             <a href="{{url('/teams')}}" class="font-semibold text-black">Team</a>
         </div>
         <div class="flex items-center space-x-4">
@@ -46,9 +46,21 @@
     </nav>
 
     <!-- Konten -->
-    <main class="flex-grow px-6 py-8">
-        <h1 class="text-2xl font-bold">Tim Kami</h1>
-    </main>
+<main class="flex-grow px-6 py-8">
+    <h1 class="text-2xl font-bold text-blue-800">Tim Kami</h1>
+    <p class="mt-4 text-gray-700">
+        Website 3dify merupakan platform e-commerce berbasis web yang menyediakan aset 3D siap unduh dalam format Blender.
+        Di balik pengembangannya terdapat tim kami yang terdiri dari empat mahasiswa Program Studi Teknologi Rekayasa
+        Perangkat Lunak, Sekolah Vokasi IPB University angkatan 59. Kami adalah menjadikan 3dify sebagai platform
+        e-commerce berbasis web terkemuka yang menyediakan aset 3D berkualitas tinggi dalam format Blender untuk dibeli dan diunduh pengguna.
+    </p>
+
+    <!-- Tim -->
+    <div class="mt-6 flex flex-col items-center">
+        <img src="{{ asset('assets/images/foto_anggota.png') }}" alt="foto_anggota" class="rounded-lg w-2/3 md:w-1/2">
+    </div>
+</main>
+
 
 
     <footer class="bg-white py-8">

@@ -22,7 +22,7 @@
                         <a href="{{ route('admin-dashboard') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Dashboard</a>
                     </li>
                     <li class="mb-2">
-                        <a href="{{ url('/admin/product') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Product</a>
+                        <a href="{{ url('/admin/product') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Produk</a>
                     </li>
                     <li class="mb-2">
                         <a href="{{ url('/admin/transaction') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Riwayat Transaksi</a>
@@ -40,7 +40,7 @@
                 <button id="openSidebar" class="lg:hidden text-gray-800 text-2xl">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h2 class="text-xl font-bold"> Product Dashboard</h2>
+                <h2 class="text-xl font-bold"> Halaman Produk</h2>
                 <!-- Admin Session -->
                 <div class="relative">
                     <button class="focus:outline-none" id="adminDropdownButton">
@@ -48,15 +48,21 @@
                         <span class="hidden sm:inline">{{ session('admin')->email }}</span>
                     </button>
                     <div id="adminDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-4">
-                        <a href="{{ route('admin-signup') }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Sign Up</a>
-                        <a href="{{ route('admin-logout') }}" class="block px-4 py-2 text-red-500 hover:bg-gray-200">Logout</a>
+                        <a href="{{ route('admin-signup') }}" class="flex items-center px-4 py-2 text-blue-600 hover:bg-gray-200">
+                            <i class="fas fa-user-plus mr-2 text-blue-600"></i>
+                            Sign Up
+                        </a>
+                        <a href="{{ route('admin-logout') }}" class="flex items-center px-4 py-2 text-red-500 hover:bg-gray-200">
+                            <i class="fas fa-sign-out-alt mr-2 text-red-500"></i>
+                            Logout
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="p-6 overflow-x-auto">
                 <div class="bg-white shadow rounded p-4">
                     <div class="flex justify-between items-center mb-4 flex-wrap">
-                        <h3 class="text-lg font-bold">Product List</h3>
+                        <h3 class="text-lg font-bold"> List Produk</h3>
                         <a href="{{ route('products.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                             + Tambah Produk
                         </a>
@@ -66,12 +72,12 @@
                             <thead>
                                 <tr class="bg-gray-100 text-left">
                                     <th class="border border-gray-300 px-2 py-2">Number</th>
-                                    <th class="border border-gray-300 px-2 py-2">Name Product</th>
-                                    <th class="border border-gray-300 px-2 py-2">Description Product</th>
-                                    <th class="border border-gray-300 px-2 py-2">Price Product</th>
-                                    <th class="border border-gray-300 px-2 py-2">Image Product</th>
-                                    <th class="border border-gray-300 px-2 py-2">Blender</th>
-                                    <th class="border border-gray-300 px-2 py-2">Category Name</th>
+                                    <th class="border border-gray-300 px-2 py-2">Nama Produk</th>
+                                    <th class="border border-gray-300 px-2 py-2">Deskripsi Produk</th>
+                                    <th class="border border-gray-300 px-2 py-2">Harga Produk</th>
+                                    <th class="border border-gray-300 px-2 py-2">Gambar Produk</th>
+                                    <th class="border border-gray-300 px-2 py-2">File Blender</th>
+                                    <th class="border border-gray-300 px-2 py-2">Nama Kategori</th>
                                     <th class="border border-gray-300 px-2 py-2">Actions</th>
                                 </tr>
                             </thead>
@@ -115,6 +121,25 @@
                     </div>
                 </div>
             </div>
+          <!-- Footer -->
+          <footer class="bg-gray-900 text-white p-6 mt-auto">
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p> &copy; {{ date('Y') }} 3Dify. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-white hover:text-gray-300">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-white hover:text-gray-300">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-white hover:text-gray-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </footer>
         </div>
     </div>
     <script>

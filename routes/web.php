@@ -83,6 +83,9 @@ Route::get('/categories', [DashboardController::class, 'indexU'])->name('categor
 Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile');
 Route::get('/teams', [DashboardController::class, 'showteams'])->name('teams');
 // Route::get('/categories', [CategoryController::class, 'showCategories'])->name('categories.index');
+Route::get('/categories/{category_id}/products', [DashboardController::class, 'showProductsByCategory'])->name('categories.products');
+Route::get('/dashboard/{category_id}/products', [DashboardController::class, 'showProductsByCategory1'])->name('categories1.products');
+Route::get('/products',[DashboardController::class, 'showproducts']) ->name('products.index');
 
 //pembayaran control
 // Route::post('/purchase/{product}', [TransactionsController::class, 'purchase'])->name('purchase');

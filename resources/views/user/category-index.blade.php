@@ -26,7 +26,7 @@
         <div class="space-x-6 hidden md:flex">
             <a href="{{url('/dashboard')}}" class="text-gray-600">Beranda</a>
             <a href="{{url('/categories')}}" class="font-semibold text-black">Kategori</a>
-            <a href="#" class="text-gray-600">Produk</a>
+            <a href="{{url('/products')}}" class="text-gray-600">Produk</a>
             <a href="{{url('/teams')}}" class="text-gray-600">Team</a>
         </div>
         <div class="flex items-center space-x-4">
@@ -51,8 +51,8 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
             @foreach($categories as $category)
                 <div class="text-center">
-                    <div class="bg-blue-500 p-4 rounded-lg shadow-md">
-                        <img src="{{ asset('images1/' . $category->image) }}" alt="{{ $category->nama_category }}" class="h-20 mx-auto">
+                    <div class="p-4 rounded-lg shadow-md" style="background: linear-gradient(135deg, #3064B1, #1A1F55);">
+                        <a href="{{ route('categories.products', $category->id) }}" class="button"><img src="{{ asset('images1/' . $category->image) }}" alt="{{ $category->nama_category }}" class="h-20 mx-auto"></a>
                     </div>
                     <p class="font-semibold mt-2">{{ $category->nama_category }}</p>
                 </div>

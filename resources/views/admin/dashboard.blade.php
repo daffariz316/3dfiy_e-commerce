@@ -6,6 +6,8 @@
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Tambahkan CDN Chart.js di bagian <head> layout kamu -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
     <div class="flex">
@@ -44,7 +46,7 @@
                         <a href="{{ route('admin-dashboard') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Dashboard</a>
                     </li>
                     <li class="mb-2">
-                        <a href="{{ url('/admin/product') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Product</a>
+                        <a href="{{ url('/admin/product') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Produk</a>
                     </li>
                     <li class="mb-2">
                         <a href="{{ url('/admin/transaction') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Riwayat Transaksi</a>
@@ -98,79 +100,97 @@
                             <span class="hidden sm:inline">{{ session('admin')->email }}</span>
                         </button>
                         <div id="adminDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-4">
-                            <a href="{{ route('admin-signup') }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Sign Up</a>
-                            <a href="{{ route('admin-logout') }}" class="block px-4 py-2 text-red-500 hover:bg-gray-200">Logout</a>
+                            <a href="{{ route('admin-signup') }}" class="flex items-center px-4 py-2 text-blue-600 hover:bg-gray-200">
+                                <i class="fas fa-user-plus mr-2 text-blue-600"></i>
+                                Sign Up
+                            </a>
+                            <a href="{{ route('admin-logout') }}" class="flex items-center px-4 py-2 text-red-500 hover:bg-gray-200">
+                                <i class="fas fa-sign-out-alt mr-2 text-red-500"></i>
+                                Logout
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="p-6">
-                {{-- <div class="cardBox">
-                    <div class="card" id="sales-card">
+            <div class="p-6 max-w-7xl mx-auto">
+                <!-- Card Info -->
+                <div class="flex justify-start p-5">
+                    <div class="bg-white p-4 rounded-xl shadow-md flex items-center justify-between w-full max-w-xs text-center">
                         <div>
-                            <div class="numbers" id="total-sales">{{ $transactions->count() }}</div>
-                            <div class="cardName">Sales</div>
+                            <div class="text-4xl font-bold text-gray-800">{{ $transactions->count() }}</div>
+                            <div class="text-lg font-medium text-gray-400">Jumlah Produk terjual</div>
                         </div>
-
-                        <div class="iconBx">
+                        <div class="text-4xl text-gray-400">
                             <ion-icon name="cart-outline"></ion-icon>
                         </div>
                     </div>
-                </div> --}}
-                <div class="flex justify-between p-5">
-                    <div class="bg-white p-3 rounded-xl shadow-md flex items-center justify-between w-full max-w-xs  text-center">
-                      <div>
-                        <div class="text-4xl font-bold text-gray-800">{{ $transactions->count() }}</div>
-                        <div class="text-lg font-medium text-gray-400">Jumlah Produk terjual</div>
-                      </div>
-                      <div class="text-4xl text-gray-400">
-                        <ion-icon name="cart-outline"></ion-icon>
-                      </div>
-                    </div>
-                  </div>
+                </div>
 
-                  <div class="p-6 overflow-x-auto">
-                    <div class="bg-white shadow rounded p-4">
-                        <div class="flex justify-between items-center mb-4 flex-wrap">
-                            <h3 class="text-lg font-bold">Transaction List</h3>
+                <!-- Chart Section (2 Chart) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Pie Chart -->
+                    <div class="bg-white shadow rounded-xl p-4 w-full">
+                        <h2 class="text-base font-semibold text-gray-800 mb-2">Transaksi per Produk</h2>
+                        <div class="w-full h-64">
+                            <canvas id="productPieChart"></canvas>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full border-collapse border border-gray-200 text-sm">
-                                <thead>
-                                    <tr class="bg-gray-100 text-left">
-                                        <th class="border border-gray-300 px-2 py-2">Number</th>
-                                        <th class="border border-gray-300 px-2 py-2">Product Name</th>
-                                        <th class="border border-gray-300 px-2 py-2">Username</th>
-                                        <th class="border border-gray-300 px-2 py-2">Status</th>
-                                        <th class="border border-gray-300 px-4 py-2">Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(isset($totalTransactionstable) && count($totalTransactionstable) > 0)
+                    </div>
+
+                    <!-- Chart Baru -->
+                    <div class="bg-white shadow rounded-xl p-4 w-full">
+                        <h2 class="text-base font-semibold text-gray-800 mb-2">Statistik Status Transaksi</h2>
+                        <div class="w-full h-64">
+                            <canvas id="transactionStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabel Transaksi (Dibawah Chart) -->
+                <div class="bg-white shadow rounded-xl p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold">Transaction List</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse border border-gray-200 text-sm">
+                            <thead>
+                                <tr class="bg-gray-100 text-left">
+                                    <th class="border border-gray-300 px-4 py-2">Nomor</th>
+                                    <th class="border border-gray-300 px-4 py-2">Nama Produk</th>
+                                    <th class="border border-gray-300 px-4 py-2">Username</th>
+                                    <th class="border border-gray-300 px-4 py-2">Status</th>
+                                    <th class="border border-gray-300 px-4 py-2">tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(isset($totalTransactionstable) && count($totalTransactionstable) > 0)
                                     @foreach($totalTransactionstable as $index => $transaction)
                                         <tr>
-                                            <td class="border border-gray-300 px-2 py-2">{{ $index + 1 }}</td>
-                                            <td class="border border-gray-300 px-2 py-2">{{ $transaction->product->name ?? 'N/A' }}</td>
-                                            <td class="border border-gray-300 px-2 py-2">{{ $transaction->user->username ?? 'N/A' }}</td>
-                                            <td class="border border-gray-300 px-2 py-2">{{ ucfirst($transaction->status) }}</td>
-                                            <td class="border border-gray-300 px-2 py-2">{{ $transaction->created_at->format('d M Y') }}</td>
+                                            <td class="border border-gray-300 px-4 py-2">{{ $index + 1 }}</td>
+                                            <td class="border border-gray-300 px-4 py-2">{{ $transaction->product->name ?? 'N/A' }}</td>
+                                            <td class="border border-gray-300 px-4 py-2">{{ $transaction->user->username ?? 'N/A' }}</td>
+                                            <td class="border border-gray-300 px-4 py-2">{{ ucfirst($transaction->status) }}</td>
+                                            <td class="border border-gray-300 px-4 py-2">{{ $transaction->created_at->format('d M Y') }}</td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="5" class="text-center">No Transactions Found</td>
+                                        <td colspan="5" class="text-center py-2">No Transactions Found</td>
                                     </tr>
                                 @endif
-                                </tbody>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </div>
+            <!-- Footer -->
+            <footer class="bg-gray-800 text-white mt-10">
+                <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-sm text-center md:text-left">
+                        &copy; {{ date('Y') }} 3Dify. All rights reserved.
+                    </div>
+                </div>
+            </footer>
     </div>
-
     <!-- Sidebar & Dropdown Scripts -->
     <script>
         document.getElementById('openSidebar').addEventListener('click', function () {
@@ -197,6 +217,67 @@
         document.getElementById('adminDropdownButton').addEventListener('click', function () {
             document.getElementById('adminDropdown').classList.toggle('hidden');
         });
+        const ctx = document.getElementById('productPieChart').getContext('2d');
+
+    const productPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: {!! json_encode($chartData['labels']) !!},
+            datasets: [{
+                label: 'Jumlah Transaksi',
+                data: {!! json_encode($chartData['data']) !!},
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                    '#FF9F40', '#00A896', '#F67280', '#6C5B7B', '#355C7D'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                title: {
+                    display: true,
+                    text: 'Transaksi per Produk'
+                }
+            }
+        }
+    });
+    const statusData = @json($transactionStats);
+
+    const ctxStatus = document.getElementById('transactionStatusChart').getContext('2d');
+    const statusChart = new Chart(ctxStatus, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(statusData), // ['pending', 'paid', 'failed']
+            datasets: [{
+                label: 'Jumlah Transaksi',
+                data: Object.values(statusData),
+                backgroundColor: [
+                    '#facc15', // pending - kuning
+                    '#4ade80', // paid - hijau
+                    '#f87171'  // failed - merah
+                ],
+                borderColor: [
+                    '#eab308',
+                    '#22c55e',
+                    '#ef4444'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
     </script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

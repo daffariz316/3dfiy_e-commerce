@@ -100,22 +100,23 @@
                     @endif
                 </div>
                 <div class="w-full md:w-2/3 md:pl-6">
-                    <h2 class="text-2xl font-bold">{{ $product->name }}</h2>
-                    <p class="text-gray-600 mt-2">{{ $product->description }}</p>
-                    <p class="text-lg font-semibold text-gray-800 mt-4">Harga: Rp{{ number_format($product->price, 0, ',', '.') }}</p>
-
+                    <p class="font-bold">Nama Produk : <span class="font-normal">{{ $product->name }}</span></p>
+                    <p class="font-bold mt-2">Deskripsi Produk :</p>
+                    <p class="mt-1 text-justify">{{ $product->description }}</p>
+                    <p class="font-bold mt-4">Harga Produk : <span class="font-normal">Rp{{ number_format($product->price, 0, ',', '.') }}</span></p>
                     @php
                         $transaction = $product->transactions->where('user_id', auth()->id())->where('status', 'paid')->first();
                     @endphp
-
-                    <div id="action-container" class="mt-4">
+                    <div id="action-container" class="mt-4 flex justify-center">
                         @if($transaction)
                             <a href="{{ route('products.download', ['product' => $product->id]) }}"
-                               class="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700">
+                               class="text-white px-4 py-2 rounded shadow hover:opacity-90 mx-2"
+                               style="background: linear-gradient(135deg, #3064B1, #1A1F55);">
                                 Download
                             </a>
                         @else
-                            <button id="pay-button" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">
+                            <button id="pay-button" class="text-white px-4 py-2 rounded shadow hover:opacity-90 mx-2"
+                                style="background: linear-gradient(135deg, #3064B1, #1A1F55);">
                                 Beli Produk
                             </button>
                         @endif
