@@ -78,14 +78,14 @@ Route::get('/download/blender/{filename}', function ($filename) {
 // dashboard user control
 Route::permanentRedirect('/', '/dashboard');
 Route::get('/dashboard', [DashboardController::class,'index']);
-Route::get('/product/{id}', [ProductController::class, 'show']);
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
 Route::get('/categories', [DashboardController::class, 'indexU'])->name('categories.indexU');
 Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile');
 Route::get('/teams', [DashboardController::class, 'showteams'])->name('teams');
 // Route::get('/categories', [CategoryController::class, 'showCategories'])->name('categories.index');
 Route::get('/categories/{category_id}/products', [DashboardController::class, 'showProductsByCategory'])->name('categories.products');
 Route::get('/dashboard/{category_id}/products', [DashboardController::class, 'showProductsByCategory1'])->name('categories1.products');
-Route::get('/products',[DashboardController::class, 'showproducts']) ->name('products.index');
+Route::get('/products',[DashboardController::class, 'showproducts']) ->name('products1.index');
 
 //pembayaran control
 // Route::post('/purchase/{product}', [TransactionsController::class, 'purchase'])->name('purchase');

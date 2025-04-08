@@ -78,31 +78,52 @@ public function callback(Request $request)
     Config::$serverKey = 'SB-Mid-server-u4vEkrtZG59K9tQyIqwYI2gr';
     Config::$isProduction = false;
     Config::$isSanitized = true;
-    Config::$is3d = true;
+    Config::$is3ds = true;
 
     // Tangkap notifikasi dari Midtrans
     $notification = new Notification();
 
     $transactionStatus = $notification->transaction_status;
+    $fraudStatus = $notification->fraud_status;
+    $paymentType = $notification->payment_type;
     $orderId = $notification->order_id;
 
-    // Cari transaksi berdasarkan order_id
+    // Log untuk debugging (opsional, bisa dihapus nanti)
+    \Log::info("Midtrans Callback", [
+        'order_id' => $orderId,
+        'status' => $transactionStatus,
+        'fraud' => $fraudStatus,
+        'payment_type' => $paymentType
+    ]);
+
+    // Cari transaksi
     $transaction = Transactions::where('order_id', $orderId)->first();
 
     if ($transaction) {
-        if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
+        if ($transactionStatus === 'capture') {
+            if ($paymentType === 'credit_card') {
+                if ($fraudStatus === 'challenge') {
+                    $transaction->status = 'challenge'; // Tunggu verifikasi manual
+                } else {
+                    $transaction->status = 'paid';
+                }
+            } else {
+                $transaction->status = 'paid';
+            }
+        } elseif ($transactionStatus === 'settlement') {
             $transaction->status = 'paid';
-        } elseif ($transactionStatus == 'pending') {
+        } elseif ($transactionStatus === 'pending') {
             $transaction->status = 'waiting';
-        } elseif ($transactionStatus == 'expire' || $transactionStatus == 'cancel' || $transactionStatus == 'deny') {
+        } elseif (in_array($transactionStatus, ['expire', 'cancel', 'deny'])) {
             $transaction->status = 'failed';
         }
+
         $transaction->save();
+        return response()->json(['message' => 'Transaction status updated successfully']);
     }
 
-    return response()->json(['message' => 'Transaction status updated successfully']);
+    return response()->json(['message' => 'Transaction not found'], 404);
 }
-
 public function approve(Request $request)
 {
     $transaction = Transactions::where('user_id', auth()->id())

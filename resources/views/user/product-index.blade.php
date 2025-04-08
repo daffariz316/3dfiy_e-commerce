@@ -38,62 +38,27 @@
 
 
     <div class="max-w-5xl mx-auto p-4">
-        <h2 class="text-2xl font-bold mb-4">Produk Furnitur</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-blue-900 p-4 rounded-lg text-white text-center">
-                <img src="#" alt="Pencil" class="mx-auto mb-2">
-                <h3>Pensil</h3>
-                <p>Rp. 15.000</p>
-                <button class="mt-2 bg-white text-blue-900 px-4 py-2 rounded">Beli Produk</button>
+        @foreach($categories as $category)
+            <h2 class="text-2xl font-bold mb-4">Produk {{ $category->nama_category }}</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach($category->products as $product)
+                    <div class="bg-blue-900 p-4 rounded-lg text-white text-center">
+                        <img src="{{ asset('images/' . $product->image) }}" alt="{{ $product->name }}" class="mx-auto mb-2 h-20 object-contain">
+                        <h3>{{ $product->name }}</h3>
+                        <p class="text-sm italic">{{ $product->description }}</p>
+                        <p>Rp. {{ number_format($product->price / 100, 0, ',', '.') }}</p>
+                        <a href="{{ route('product.show', $product->id) }}" class="mt-2 bg-white text-blue-900 px-4 py-2 rounded inline-block">Beli Produk</a>
+                        {{-- @if ($product->blender_file)
+                            <a href="{{ asset('storage/' . $product->blender_file) }}" download class="mt-2 bg-white text-blue-900 px-4 py-2 rounded inline-block">Beli Produk</a>
+                        @else
+                            <span class="text-sm italic block mt-2">File tidak tersedia</span>
+                        @endif --}}
+                    </div>
+                @endforeach
             </div>
-            <div class="bg-blue-900 p-4 rounded-lg text-white text-center">
-                <img src="#" alt="Buku" class="mx-auto mb-2">
-                <h3>Buku</h3>
-                <p>Rp. 18.000</p>
-                <button class="mt-2 bg-white text-blue-900 px-4 py-2 rounded">Beli Produk</button>
-            </div>
-            <div class="bg-blue-900 p-4 rounded-lg text-white text-center">
-                <img src="#" alt="Pulpen" class="mx-auto mb-2">
-                <h3>Pulpen</h3>
-                <p>Rp. 16.000</p>
-                <button class="mt-2 bg-white text-blue-900 px-4 py-2 rounded">Beli Produk</button>
-            </div>
-            <div class="bg-blue-900 p-4 rounded-lg text-white text-center">
-                <img src="#" alt="Penghapus" class="mx-auto mb-2">
-                <h3>Penghapus</h3>
-                <p>Rp. 12.000</p>
-                <button class="mt-2 bg-white text-blue-900 px-4 py-2 rounded">Beli Produk</button>
-            </div>
-        </div>
-
-        <h2 class="text-2xl font-bold my-4">Produk Alat Tulis</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-blue-900 p-4 rounded-lg text-white text-center">
-                <img src="#" alt="Kursi" class="mx-auto mb-2">
-                <h3>Kursi</h3>
-                <p>Rp. 22.000</p>
-                <button class="mt-2 bg-white text-blue-900 px-4 py-2 rounded">Beli Produk</button>
-            </div>
-            <div class="bg-blue-900 p-4 rounded-lg text-white text-center">
-                <img src="#" alt="Meja" class="mx-auto mb-2">
-                <h3>Meja</h3>
-                <p>Rp. 20.000</p>
-                <button class="mt-2 bg-white text-blue-900 px-4 py-2 rounded">Beli Produk</button>
-            </div>
-            <div class="bg-blue-900 p-4 rounded-lg text-white text-center">
-                <img src="#" alt="Lemari" class="mx-auto mb-2">
-                <h3>Lemari</h3>
-                <p>Rp. 22.000</p>
-                <button class="mt-2 bg-white text-blue-900 px-4 py-2 rounded">Beli Produk</button>
-            </div>
-            <div class="bg-blue-900 p-4 rounded-lg text-white text-center">
-                <img src="#" alt="Kasur" class="mx-auto mb-2">
-                <h3>Kasur</h3>
-                <p>Rp. 20.000</p>
-                <button class="mt-2 bg-white text-blue-900 px-4 py-2 rounded">Beli Produk</button>
-            </div>
-        </div>
+        @endforeach
     </div>
+
 
     <footer class="bg-white py-8">
         <div class="container mx-auto flex justify-between items-start">

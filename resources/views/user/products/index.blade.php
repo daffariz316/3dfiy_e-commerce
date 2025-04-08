@@ -51,8 +51,8 @@
             <p class="text-2xl md:text-4xl font-bold mb-2">Solusi Praktis Kebutuhan Asset 3D Blender</p>
             <p class="text-base md:text-xl">3Dify memudahkan Anda menemukan dan membeli asset 3D berkualitas tinggi, khusus untuk furniture dan alat tulis sekolah.</p>
             <div class="mt-4 flex flex-col md:flex-row justify-center md:justify-start items-center gap-4">
-                <button class="bg-blue-600 px-4 py-2 rounded-md text-white">Jelajahi Kategori</button>
-                <button class="bg-white text-blue-600 px-4 py-2 rounded-md border border-blue-600">Temukan Produk</button>
+                <a href="{{url('/categories')}}" class="bg-blue-600 px-4 py-2 rounded-md text-white" type="button">Jelajahi Kategori</a>
+                <a href="{{url('/products')}}" class="bg-white text-blue-600 px-4 py-2 rounded-md border border-blue-600" type="button">Temukan Produk</a>
             </div>
         </div>
     </header>

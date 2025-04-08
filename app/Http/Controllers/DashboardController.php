@@ -143,6 +143,8 @@ class DashboardController extends Controller
         ]);
     }
     public function showproducts(){
-        return view('user.product-index');
+        $products = Product::with('category')->get();
+        $categories = Category::with('products')->get();
+        return view('user.product-index', compact('products', 'categories'));
     }
 }
